@@ -1,0 +1,12 @@
+name: iqual FAQ
+description: FAQ module
+package: iqual FAQ
+type: module
+core: 8.x
+dependencies:
+  - pagedesigner_block_adaptable:pagedesigner_block_adaptable
+  - schema_metatag:schema_metatag
+  - schema_metatag:schema_qa_page
+
+'interface translation project': iq_faq
+'interface translation server pattern': modules/custom/iq_faq/translations/iq_faq-%language.po
