@@ -1,0 +1,9 @@
+langcode: en
+status: true
+name: FAQ
+type: iq_faq
+description: 'Question/Answer combination for FAQ pages'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

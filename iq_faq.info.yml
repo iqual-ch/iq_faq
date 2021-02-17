@@ -4,6 +4,7 @@ package: iqual FAQ
 type: module
 core: 8.x
 dependencies:
+  - core:options
   - pagedesigner_block_adaptable:pagedesigner_block_adaptable
   - schema_metatag:schema_metatag
   - schema_metatag:schema_qa_page

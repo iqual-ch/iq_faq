@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.iq_faq
+  module:
+    - pagedesigner_block
+    - pagedesigner_block_adaptable
+  theme:
+    - iq_custom
+id: views_block__iq_faq_block_element_selection
+theme: iq_custom
+region: pagedesigner
+weight: 0
+provider: null
+plugin: 'adaptable_views_block:iq_faq-block_element_selection'
+settings:
+  id: 'adaptable_views_block:iq_faq-block_element_selection'
+  label: ''
+  provider: pagedesigner_block_adaptable
+  label_display: '0'
+  views_label: ''
+  items_per_page: none

@@ -1,0 +1,13 @@
+diff --git a/schema_qa_page/src/Plugin/metatag/Tag/SchemaQAPageMainEntity.php b/schema_qa_page/src/Plugin/metatag/Tag/SchemaQAPageMainEntity.php
+index 03085df..49249a7 100644
+--- a/schema_qa_page/src/Plugin/metatag/Tag/SchemaQAPageMainEntity.php
++++ b/schema_qa_page/src/Plugin/metatag/Tag/SchemaQAPageMainEntity.php
+@@ -21,7 +21,7 @@ use Drupal\schema_metatag\Plugin\metatag\Tag\SchemaNameBase;
+  *   type = "string",
+  *   secure = FALSE,
+  *   multiple = TRUE,
+- *   property_type = "url",
++ *   property_type = "question",
+  *   tree_parent = {},
+  *   tree_depth = -1,
+  * )

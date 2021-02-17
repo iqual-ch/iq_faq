@@ -1,0 +1,7 @@
+{
+  "patches": {
+    "drupal/schema_metatag": {
+      "Unable to add a question to FAQ page": "https://www.drupal.org/files/issues/2020-11-17/faq-question.patch"
+    }
+  }
+}

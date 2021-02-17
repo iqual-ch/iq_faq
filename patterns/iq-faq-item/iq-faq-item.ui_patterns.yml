@@ -1,0 +1,26 @@
+iq-faq-item:
+  label: iq_faq Item
+  description: FAQ Element
+  type: component
+  category: FAQ
+  icon: fas fa-question
+  pagedesigner: 1
+  designer: 0
+  weight: 1000
+  fields:
+    question:
+      type: text
+      label: "Question"
+    answer:
+      type: html
+      label: "Answer"
+  libraries:
+    - iq-faq-item:
+        css:
+          component:
+            faq-item.css: {}
+        js:
+          faq-item.js: {}
+        dependencies:
+          - core/drupal
+          - core/jquery.ui.accordion

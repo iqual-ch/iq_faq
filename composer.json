@@ -11,5 +11,8 @@
   "require": {
     "iqual/pagedesigner_block_adaptable": "*",
     "drupal/schema_metatag": "*"
+  },
+  "extra": {
+    "patches-file": "composer.patches.json"
   }
 }

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_iq_answer
+    - node.type.iq_faq
+  module:
+    - text
+id: node.iq_faq.field_iq_answer
+field_name: field_iq_answer
+entity_type: node
+bundle: iq_faq
+label: Answer
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

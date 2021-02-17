@@ -1,0 +1,139 @@
+/** Load variables **/
+@import '../../resources/sass/definitions';
+
+.view-iq-faq{
+  .view-content{
+    padding: 0 15px;
+  }
+}
+
+#page .iq-faq-item{
+  width: 100%;
+  &.ui-widget{
+    padding-top: 0;
+    padding-bottom: 0;
+    font-family: inherit;
+    margin: 0 0 $base-margin-top 0;
+  }
+
+  &.ui-accordion{
+    > .iq-column{
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .ui-accordion-header{
+    padding: 0;
+    margin: 0;
+  }
+  .iq-faq-item-question {
+    width: 100%;
+    display: flex;
+    border-radius: 0;
+    padding: $padding-base * 0.5;
+    border: none;
+    font-size: $font-size-standard;
+    font-weight: $font-weight-standard;
+    font-style: $font-style-standard;
+    font-family: $font-family-standard;
+    margin-bottom: 1px;
+
+    &::before{
+      content: '';
+      background: linear-gradient($tab-font-color,$tab-font-color), linear-gradient($tab-font-color,$tab-font-color);
+      background-position: center;
+      background-size: 100% 1px,1px 100%;
+      background-repeat: no-repeat;
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      right: 19px;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      transition: $transition-default;
+    }
+
+    &::after{
+      content: '';
+      display: block;
+      width: 21px;
+      height: 21px;
+      border: 1px solid $tab-font-color;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+    }
+
+
+    > *:first-child{
+      margin-top: 0;
+    }
+    > *:last-child{
+      margin-bottom: 0;
+    }
+
+    > div{
+      > *:first-child{
+        margin-top: 0;
+      }
+      > *:last-child{
+        margin-bottom: 0;
+      }
+    }
+
+
+    &.ui-state-default {
+      cursor: pointer;
+      color: $tab-font-color;
+      background-color: $tab-color;
+
+      *{
+        color: $tab-font-color;
+      }
+    }
+    &.ui-state-active {
+      cursor: pointer;
+      color: $tab-font-color-active;
+      background-color: $tab-color-active;
+
+      &::before{
+        transform: translateY(-50%) rotate(180deg);
+        background-size: 100% 1px, 0 0;
+      }
+
+      *{
+        color: $tab-font-color-active;
+      }
+    }
+    &.ui-accordion-header-collapsed .iq-collapsible-icon-open {
+      //display: none;
+      opacity: 0;
+    }
+    &.ui-state-active .iq-collapsible-icon-closed {
+      //display: none;
+      opacity: 0;
+    }
+  }
+  .iq-faq-item-answer{
+    border: $border-width-base solid $border-color-base;
+    border-radius: 0;
+    padding: $padding-base * 0.5;
+    margin: 0;
+    background: transparent;
+    overflow: unset;
+
+    @media print {
+      display: block !important;
+    }
+
+    > *:first-child{
+      margin-top: 0;
+    }
+    > *:last-child{
+      margin-bottom: 0;
+    }
+  }
+}

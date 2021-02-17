@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.iq_faq
+id: node.iq_faq.title
+field_name: title
+entity_type: node
+bundle: iq_faq
+label: Question
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

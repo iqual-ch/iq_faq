@@ -10,15 +10,32 @@
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgid "Topics"
+msgstr "Themen"
 
 msgid "Add multiple topics, separated by commas. Topics that do not exist will be created when the post is saved."
 msgstr "Fügen Sie mehrere durch Kommas getrennte Themen hinzu. Nicht vorhandene Themen werden beim Speichern des Beitrags erstellt."
 
-msgid "Reading duration"
-msgstr "Lesedauer"
+msgid "Answer"
+msgstr "Antwort"
 
-msgid "Publish date"
-msgstr "Publikationsdatum"
+msgid "Question"
+msgstr "Fragen"
 
-msgid "Last edited"
-msgstr "Zuletzt geändert"
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Very low"
+msgstr "Sehr niedrig"
+
+msgid "Low"
+msgstr "Niedrig"
+
+msgid "Medium"
+msgstr "Mittel"
+
+msgid "High"
+msgstr "Hoch"
+
+msgid "Very high"
+msgstr "Sehr hoch"

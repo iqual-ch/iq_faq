@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies: {  }
+id: node
+label: Content
+tags:
+  title: '[node:title] | [site:name]'
+  description: '[node:summary]'
+  canonical_url: '[node:url]'
+  schema_qa_page_main_entity: 'a:2:{s:5:"@type";s:8:"Question";s:5:"pivot";s:1:"1";}'
+  schema_qa_page_type: FAQPage
