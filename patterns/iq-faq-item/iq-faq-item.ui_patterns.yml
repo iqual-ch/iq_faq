@@ -1,6 +1,6 @@
 iq-faq-item:
-  label: iq_faq Item
-  description: FAQ Element
+  label: iq_faq - FAQ Item
+  description:  Item
   type: component
   category: FAQ
   icon: fas fa-question
