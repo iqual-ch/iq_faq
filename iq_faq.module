@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Contains iq_faq.module.
+ */
+
+use Drupal\iq_faq\Element\FaqPattern;
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function iq_faq_element_plugin_alter(array &$definitions) {
+  $definitions['pattern']['class'] = FaqPattern::class;
+}
