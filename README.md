@@ -8,9 +8,9 @@ FAQ module for pagedesigner.
 Setting up FAQ pages is very time-consuming, especially if they have to comply with schma.org standards. Another problem is the fact that we often have different pages showing the same question, which leads to unnecessary redundancies.
 
 The purpose of this module is to solve both problems by
-1. Introducing an FAQ pattern that automatically adds the question and answer to the schema.org metatags (todo)
+1. Introducing an FAQ pattern that automatically adds the question and answer to the schema.org metatags
 2. Introducing an FAQ node type multiple several view blocks available in Pagedesigner:
-	- **Manual selection**: Manually choose Questions (todo)
+	- **Manual selection**: Manually choose Questions (todo: multiple choice)
 	- **Manual topic selection**: Manually choose topics as filter criteria
 	- **Automatic topic selection**: Use the page's topics as fiter criteria
 
@@ -20,8 +20,9 @@ Install module
     composer require drupal/iq_faq
     drush en iq_faq
 
- If needed: add iq_topics taxonomy field to content types to enable automatic topic selection.
- If needed: Add FAQ as filterable content type in content view
+If needed:
+- Add iq_topics taxonomy field to content types to enable automatic topic selection.
+- Add FAQ as filterable content type in content view
 
 
 ## Expected outcome
