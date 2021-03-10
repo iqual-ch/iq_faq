@@ -360,16 +360,13 @@ display:
             operator_list: {  }
         nid:
           id: nid
-          table: node_field_data
+          table: node
           field: nid
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
+          operator: in
+          value: {  }
           group: '1'
           exposed: true
           expose:
@@ -383,7 +380,7 @@ display:
             identifier: nid
             required: 0
             remember: 0
-            multiple: false
+            multiple: 1
             remember_roles:
               authenticated: authenticated
               author: 0
@@ -392,9 +389,6 @@ display:
               designer: 0
               anonymous: 0
               test: 0
-            placeholder: ''
-            min_placeholder: ''
-            max_placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -408,8 +402,7 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           entity_type: node
-          entity_field: nid
-          plugin_id: numeric
+          plugin_id: nid_views_filter
       defaults:
         filters: false
         filter_groups: false
@@ -417,6 +410,7 @@ display:
         operator: AND
         groups:
           1: AND
+      block_hide_empty: 1
     cache_metadata:
       max-age: -1
       contexts:
@@ -536,6 +530,7 @@ display:
         operator: AND
         groups:
           1: AND
+      block_hide_empty: 1
     cache_metadata:
       max-age: -1
       contexts:
@@ -600,6 +595,7 @@ display:
           plugin_id: taxonomy_index_tid
       defaults:
         arguments: false
+      block_hide_empty: true
     cache_metadata:
       max-age: -1
       contexts:
