@@ -14,11 +14,20 @@ The purpose of this module is to solve both problems by
 	- **Manual topic selection**: Manually choose topics as filter criteria
 	- **Automatic topic selection**: Use the page's topics as fiter criteria
 
-## Setup
+## Setup & Installation
 Install module
 
     composer require drupal/iq_faq
     drush en iq_faq
+
+
+Apply «Change pivot» patch:
+
+     cp cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
+     composer patch-add drupal/schema_metatag 'Change pivot' patches/20191126_change-pivot_schema-metatag.patch
+
+This patch changes delimiters for questions and answers to two colons (::) instead of one comma (,).
+
 
 If needed:
 - Add iq_topics taxonomy field to content types to enable automatic topic selection.
