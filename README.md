@@ -21,6 +21,11 @@ Install module
     drush en iq_faq
 
 
+Compile CSS
+
+    drush iq_barrio_helper:sass-compile
+
+
 Apply «Change pivot» patch:
 
      cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
