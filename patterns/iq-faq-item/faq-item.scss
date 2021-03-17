@@ -5,6 +5,11 @@
   .view-content{
     padding: 0 15px;
   }
+  &[data-gjs-type]{
+    > .row > [data-gjs-type]{
+      width: 100%;
+    }
+  }
 }
 
 #page .iq-faq-item{
