@@ -23,7 +23,7 @@ Install module
 
 Apply «Change pivot» patch:
 
-     cp cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
+     cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
      composer patch-add drupal/schema_metatag 'Change pivot' patches/20191126_change-pivot_schema-metatag.patch
 
 This patch changes delimiters for questions and answers to two colons (::) instead of one comma (,).
