@@ -17,7 +17,7 @@ The purpose of this module is to solve both problems by
 ## Setup & Installation
 Install module
 
-    composer require drupal/iq_faq
+    composer require iqual/iq_faq
     drush en iq_faq
 
 
