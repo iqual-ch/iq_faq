@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "iqual/pagedesigner_block_adaptable": "*",
+    "iqual/pagedesigner_block_adaptable": "dev-filter_plugin_system",
     "drupal/schema_metatag": "1.*"
   }
 }

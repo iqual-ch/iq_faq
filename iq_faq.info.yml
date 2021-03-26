@@ -8,6 +8,8 @@ dependencies:
   - pagedesigner_block_adaptable:pagedesigner_block_adaptable
   - schema_metatag:schema_metatag
   - schema_metatag:schema_qa_page
+  - schema_metatag:schema_qa_page
+  - ui_patterns:ui_patterns_views
 
 'interface translation project': iq_faq
 'interface translation server pattern': modules/custom/iq_faq/translations/iq_faq-%language.po
