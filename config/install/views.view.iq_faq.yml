@@ -591,7 +591,7 @@ display:
           break_phrase: true
           add_table: false
           require_value: false
-          reduce_duplicates: false
+          reduce_duplicates: 1
           plugin_id: taxonomy_index_tid
       defaults:
         arguments: false
