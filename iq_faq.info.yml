@@ -9,7 +9,7 @@ dependencies:
   - schema_metatag:schema_metatag
   - schema_metatag:schema_qa_page
   - schema_metatag:schema_qa_page
-  - ui_patterns:ui_patterns_views
+  - iq_metatag_extension:iq_metatag_extension
 
 'interface translation project': iq_faq
 'interface translation server pattern': modules/custom/iq_faq/translations/iq_faq-%language.po
