@@ -38,7 +38,7 @@ This patch changes delimiters for questions and answers to two colons (::) inste
 Apply «Allow html in tags (schema metatag)» patch:
 
      cp public/modules/custom/iq_metatag_extension/patches/20191023_html-in-tags_schema-metatag.patch patches/20191023_html-in-tags_schema-metatag.patch
-     composer patch-add drupal/metatag 'Allow html in tags (metatag)' patches/20191023_html-in-tags_schema-metatag.patch
+     composer patch-add drupal/schema_metatag 'Allow html in tags (schema metatag)' patches/20191023_html-in-tags_schema-metatag.patch
 
 Apply «Allow html in tags (metatag)» patch:
 
