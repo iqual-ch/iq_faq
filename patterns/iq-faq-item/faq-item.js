@@ -45,8 +45,8 @@
 
   Drupal.behaviors.iq_faq = {
     attach: function (context, settings) {
-      rearrangeViewItems($(context).find('.pd-live .view-iq-faq [data-faq-accordion]'));
-      generateAccordion($(context).find('.pd-live [data-faq-accordion]'));
+      rearrangeViewItems($(context).find('.view-iq-faq [data-faq-accordion]'));
+      generateAccordion($(context).find('[data-faq-accordion]'));
     }
   };
 

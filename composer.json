@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "iqual/pagedesigner_block_adaptable": "dev-filter_plugin_system",
+    "iqual/pagedesigner_block_adaptable": "^0.5",
     "iqual/iq_metatag_extension": "*",
     "drupal/schema_metatag": "1.*"
   }
