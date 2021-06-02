@@ -64,21 +64,25 @@ class FaqPattern extends Pattern {
           ];
         }
 
+        $metatagsSchemaQA['pivot'] = 1;
+        $metatagsSchemaQA['acceptedAnswer']['pivot'] = 1;
+
+        $question = trim(preg_replace('/\s\s+/', ' ', $question));
+        $answer = trim(preg_replace('/\s\s+/', ' ', $answer));
+
         $metatagsQuestions = explode('::', $metatagsSchemaQA['name']);
         if (!\in_array($question, $metatagsQuestions)) {
           array_push($metatagsQuestions, $question);
-        }
-        $metatagsSchemaQA['name'] = rtrim(ltrim(implode('::', $metatagsQuestions), '::'), '::');
+          $metatagsSchemaQA['name'] = rtrim(ltrim(implode('::', $metatagsQuestions), '::'), '::');
 
-        $metatagsAnswers = explode('::', $metatagsSchemaQA['acceptedAnswer']['text']);
-        if (!\in_array($answer, $metatagsAnswers)) {
+          $metatagsAnswers = explode('::', $metatagsSchemaQA['acceptedAnswer']['text']);
           array_push($metatagsAnswers, $answer);
-        }
-        $metatagsSchemaQA['acceptedAnswer']['text'] = rtrim(ltrim(implode('::', $metatagsAnswers), '::'), '::');
+          $metatagsSchemaQA['acceptedAnswer']['text'] = rtrim(ltrim(implode('::', $metatagsAnswers), '::'), '::');
 
-        $metatags['schema_qa_page_main_entity'] = serialize($metatagsSchemaQA);
-        $node->field_meta_tags = serialize($metatags);
-        $node->save();
+          $metatags['schema_qa_page_main_entity'] = serialize($metatagsSchemaQA);
+          $node->field_meta_tags = serialize($metatags);
+          $node->save();
+        }
       }
     }
     return $element;
