@@ -278,6 +278,18 @@ display:
           entity_field: langcode
           plugin_id: language
       sorts:
+        field_iq_priority_value:
+          id: field_iq_priority_value
+          table: node__field_iq_priority
+          field: field_iq_priority_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: false
+          expose:
+            label: ''
+          plugin_id: standard
         title:
           id: title
           table: node_field_data
@@ -292,18 +304,6 @@ display:
           exposed: false
           expose:
             label: ''
-        field_iq_priority_value:
-          id: field_iq_priority_value
-          table: node__field_iq_priority
-          field: field_iq_priority_value
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: false
-          expose:
-            label: ''
-          plugin_id: standard
       title: FAQ
       header: {  }
       footer: {  }
