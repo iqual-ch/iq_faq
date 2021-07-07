@@ -427,7 +427,6 @@ display:
               authenticated: authenticated
               author: 0
               editor: 0
-              iq_blog_author: 0
               designer: 0
               anonymous: 0
               test: 0
@@ -583,10 +582,8 @@ display:
               authenticated: authenticated
               author: 0
               editor: 0
-              iq_blog_author: 0
               designer: 0
               anonymous: 0
-              test: 0
             reduce: 0
           is_grouped: false
           group_info:
@@ -605,7 +602,7 @@ display:
           limit: true
           vid: iq_topics
           hierarchy: 0
-          error_message: 1
+          error_message: 0
           plugin_id: taxonomy_index_tid
         langcode:
           id: langcode
