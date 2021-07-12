@@ -7,7 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_page_attachments_alter().
@@ -15,7 +15,7 @@ use Drupal\Core\Block\BlockPluginInterface;
 function iq_faq_page_attachments_alter(array &$attachments) {
 
   $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof \Drupal\node\NodeInterface) {
+  if ($node instanceof NodeInterface) {
 
     // Store rendered FAQ data to node.
     if (array_key_exists('faq_data', $GLOBALS) && (array_key_exists('pattern', $GLOBALS['faq_data']) && \count($GLOBALS['faq_data']['pattern']['questions']) || array_key_exists('view', $GLOBALS['faq_data']) && \count($GLOBALS['faq_data']['view']['questions']))) {
@@ -27,7 +27,7 @@ function iq_faq_page_attachments_alter(array &$attachments) {
 
       if ($existingFaqData && is_array($existingFaqData)) {
         foreach ($existingFaqData as $regionID => $faqItems) {
-          if (!array_key_exists($regionID, $GLOBALS['faq_data'])) {
+          if (is_array($GLOBALS['faq_data']) && !array_key_exists($regionID, $GLOBALS['faq_data'])) {
             $GLOBALS['faq_data'] = $faqItems;
           }
         }
@@ -37,81 +37,91 @@ function iq_faq_page_attachments_alter(array &$attachments) {
       $node->save();
     }
 
-    // Format the rendered FAQ items.
-    $faqRendered = unserialize($node->field_iq_faq_data->value);
-    $renderedFaqQuestions = [];
-    foreach ($faqRendered as $regionID => $region) {
-      if (array_key_exists('questions', $region) && is_array($region['questions'])) {
-        foreach ($region['questions'] as $key => $question) {
-          $renderedFaqQuestions[] = [
-            '@type' => 'Question',
-            'name' => $question,
-            'acceptedAnswer' => [
-              '@type' => 'Answer',
-              'text' => trim(preg_replace('/\s\s+/', ' ', $faqRendered[$regionID]['answers'][$key])),
+    if (is_array($node->field_iq_faq_data) && $node->field_iq_faq_data->value) {
+      $faqRendered = unserialize($node->field_iq_faq_data->value);
+      if (is_array($faqRendered)) {
+
+        // Format the rendered FAQ items.
+        $renderedFaqQuestions = [];
+        foreach ($faqRendered as $regionID => $region) {
+          if (is_array($region) && array_key_exists('questions', $region) && is_array($region['questions'])) {
+            foreach ($region['questions'] as $key => $question) {
+              $renderedFaqQuestions[] = [
+                '@type' => 'Question',
+                'name' => $question,
+                'acceptedAnswer' => [
+                  '@type' => 'Answer',
+                  'text' => trim(preg_replace('/\s\s+/', ' ', $faqRendered[$regionID]['answers'][$key])),
+                ],
+              ];
+            }
+          }
+        }
+
+        // Attach rendered FAQ items to page head.
+        if (count($renderedFaqQuestions)) {
+
+          // Check for schema_qa_page_type in html head and
+          // make sure it's correct.
+          $schemaQaPageTypeElementKey = 0;
+          $schemaQaPageTypeElement = array_filter($attachments['#attached']['html_head'], function ($headEelement) {
+            return $headEelement[1] == 'schema_qa_page_type';
+          });
+
+          if (count($schemaQaPageTypeElement)) {
+            $schemaQaPageTypeElementKey = array_keys($schemaQaPageTypeElement)[0];
+          }
+
+          $schemaQaPageTypeElement = [
+            0 => [
+              '#tag' => 'meta',
+              '#attributes' => [
+                'name' => '@type',
+                'content' => 'FAQPage',
+                'group' => 'schema_qa_page',
+                'schema_metatag' => TRUE,
+              ],
             ],
+            1 => 'schema_qa_page_type',
           ];
+
+          if ($schemaQaPageTypeElementKey) {
+            $attachments['#attached']['html_head'][$schemaQaPageTypeElementKey] = $schemaQaPageTypeElement;
+          }
+          else {
+            array_push($attachments['#attached']['html_head'], $schemaQaPageTypeElement);
+          }
+
+          // Check for schema_qa_page_main_entity_0. If it's there,
+          // add the rendered FAQ items, otherwise create it.
+          $schemaQaPageMainEntityKey = 0;
+          $schemaQaPageMainEntity = array_filter($attachments['#attached']['html_head'], function ($headEelement) {
+            return $headEelement[1] == 'schema_qa_page_main_entity_0';
+          });
+
+          if (count($schemaQaPageMainEntity)) {
+            $schemaQaPageMainEntityKey = array_keys($schemaQaPageMainEntity)[0];
+          }
+
+          if ($schemaQaPageMainEntityKey) {
+            $attachments['#attached']['html_head'][$schemaQaPageMainEntityKey][0]['#attributes']['content'] = array_merge($attachments['#attached']['html_head'][$schemaQaPageMainEntityKey][0]['#attributes']['content'], $renderedFaqQuestions);
+          }
+          else {
+            array_push($attachments['#attached']['html_head'], [
+              0 => [
+                '#tag' => 'meta',
+                '#attributes' => [
+                  'name' => 'mainEntity',
+                  'content' => $renderedFaqQuestions,
+                  'group' => 'schema_qa_page',
+                  'schema_metatag' => TRUE,
+                ],
+              ],
+              1 => 'schema_qa_page_main_entity_0',
+            ]);
+          }
         }
       }
-    }
-
-    // Check for schema_qa_page_type in html head and make sure it's correct.
-    $schemaQaPageTypeElementKey = 0;
-    $schemaQaPageTypeElement = array_filter($attachments['#attached']['html_head'], function ($headEelement) {
-      return $headEelement[1] == 'schema_qa_page_type';
-    });
-
-    if (count($schemaQaPageTypeElement)) {
-      $schemaQaPageTypeElementKey = array_keys($schemaQaPageTypeElement)[0];
-    }
-
-    $schemaQaPageTypeElement = [
-      0 => [
-        '#tag' => 'meta',
-        '#attributes' => [
-          'name' => '@type',
-          'content' => 'FAQPage',
-          'group' => 'schema_qa_page',
-          'schema_metatag' => TRUE,
-        ],
-      ],
-      1 => 'schema_qa_page_type',
-    ];
-
-    if ($schemaQaPageTypeElementKey) {
-      $attachments['#attached']['html_head'][$schemaQaPageTypeElementKey] = $schemaQaPageTypeElement;
-    }
-    else {
-      array_push($attachments['#attached']['html_head'], $schemaQaPageTypeElement);
-    }
-
-    // Check for schema_qa_page_main_entity_0. If it's there,
-    // add the rendered FAQ items, otherwise create it.
-    $schemaQaPageMainEntityKey = 0;
-    $schemaQaPageMainEntity = array_filter($attachments['#attached']['html_head'], function ($headEelement) {
-      return $headEelement[1] == 'schema_qa_page_main_entity_0';
-    });
-
-    if (count($schemaQaPageMainEntity)) {
-      $schemaQaPageMainEntityKey = array_keys($schemaQaPageMainEntity)[0];
-    }
-
-    if ($schemaQaPageMainEntityKey) {
-      $attachments['#attached']['html_head'][$schemaQaPageMainEntityKey][0]['#attributes']['content'] = array_merge($attachments['#attached']['html_head'][$schemaQaPageMainEntityKey][0]['#attributes']['content'], $renderedFaqQuestions);
-    }
-    else {
-      array_push($attachments['#attached']['html_head'], [
-        0 => [
-          '#tag' => 'meta',
-          '#attributes' => [
-            'name' => 'mainEntity',
-            'content' => $renderedFaqQuestions,
-            'group' => 'schema_qa_page',
-            'schema_metatag' => TRUE,
-          ],
-        ],
-        1 => 'schema_qa_page_main_entity_0',
-      ]);
     }
   }
 }
