@@ -100,8 +100,10 @@ function iq_faq_views_pre_render($view) {
           $nodeResult = $nodeResult->getTranslation($langCode);
         }
 
-        $faqView['questions'][] = $nodeResult->title->value;
-        $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
+        if ($nodeResult->field_iq_answer->value) {
+          $faqView['questions'][] = $nodeResult->title->value;
+          $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
+        }
       }
     }
 
