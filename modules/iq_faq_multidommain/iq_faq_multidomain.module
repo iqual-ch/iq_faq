@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * @file
+ * Contains iq_faq.module.
+ */
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Collect FAQ patterns from view and store data to global variable.
+ */
+function iq_faq_multidomain_views_pre_render($view) {
+
+  if (array_key_exists('collect_view_faq_data', $GLOBALS) && $GLOBALS['collect_view_faq_data'] && $view->id() == 'iq_faq') {
+
+    $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $currentDomainId = \Drupal::service('domain.negotiator')->getActiveDomain()->id();
+    $domainAccesMananger = \Drupal::service('domain_access.manager');
+
+    $faqView = [
+      'questions' => [],
+      'answers' => [],
+    ];
+
+    foreach ($view->result as $result) {
+      if (get_class($result->_entity) == 'Drupal\node\Entity\Node' && $result->_entity->getType() == 'iq_faq') {
+        $nodeResult = $result->_entity;
+        if ($nodeResult instanceof NodeInterface && $nodeResult->hasTranslation($langCode)) {
+          $nodeResult = $nodeResult->getTranslation($langCode);
+        }
+
+        if ($nodeResult->field_iq_answers) {
+          foreach ($nodeResult->field_iq_answers->referencedEntities() as $answer) {
+            if ($currentDomainId && in_array($currentDomainId, array_keys($domainAccesMananger->getAccessValues($answer)))) {
+              $faqView['questions'][] = $nodeResult->title->value;
+              $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($answer->field_iq_answer->value)));
+            }
+          }
+        }
+      }
+    }
+
+    // Store collected FAQ data to node.
+    if (\count($faqView['questions'])) {
+
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if (!$node instanceof NodeInterface) {
+        return;
+      }
+
+      if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
+        $node = $node->getTranslation($langCode);
+      }
+
+      $existingFaqData = FALSE;
+      if ($node->field_iq_faq_data->value) {
+        $existingFaqData = unserialize($node->field_iq_faq_data->value);
+      }
+
+      if (is_array($existingFaqData)) {
+        if (!array_key_exists('view', $existingFaqData)) {
+          $existingFaqData['view'] = [
+            'questions' => [],
+            'answers' => [],
+          ];
+        }
+      }
+      else {
+        $existingFaqData = [
+          'view' => [
+            'questions' => [],
+            'answers' => [],
+          ],
+        ];
+      }
+
+      foreach ($faqView['questions'] as $key => $question) {
+        if (!in_array($question, $existingFaqData['view']['questions'])) {
+
+          $existingFaqData['view']['questions'][] = $question;
+          $existingFaqData['view']['answers'][] = $faqView['answers'][$key];
+        }
+      }
+      $node->field_iq_faq_data = serialize($existingFaqData);
+      $node->save();
+    }
+  }
+}

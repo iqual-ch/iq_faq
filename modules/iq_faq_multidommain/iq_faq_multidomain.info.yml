@@ -1,0 +1,8 @@
+name: iqual FAQ multidomain
+description: FAQ module multidomain extension
+package: iqual FAQ
+type: module
+core: 8.x
+dependencies:
+  - iq_faq:iq_faq
+  - iq_multidomain_extensions:iq_multidomain_extensions
