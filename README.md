@@ -1,6 +1,11 @@
 # iq_faq
 
 
+*TODO*
+- Add new content type iq_faq_answer.
+- Entity reference from iq_faq to n iq_faq_answer
+
+
 FAQ module for pagedesigner.
 
 
