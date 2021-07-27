@@ -5,7 +5,7 @@
  * Contains iq_faq.module.
  */
 
-use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_entity_presave().
