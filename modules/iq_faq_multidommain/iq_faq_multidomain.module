@@ -15,7 +15,9 @@ use Drupal\Core\Entity\EntityInterface;
 function iq_faq_multidomain_entity_presave(EntityInterface $entity) {
   if ($entity->getEntityType()->id() == 'node' && $entity->getType() == 'iq_faq_answer') {
     $question = \Drupal::routeMatch()->getParameter('node');
-    $entity->title = $question->title->value;
+    if ($question && $question->title->value) {
+      $entity->title = $question->title->value;
+    }
   }
 }
 
@@ -91,7 +93,6 @@ function iq_faq_multidomain_views_pre_render($view) {
 
       foreach ($faqView['questions'] as $key => $question) {
         if (!in_array($question, $existingFaqData['view']['questions'])) {
-
           $existingFaqData['view']['questions'][] = $question;
           $existingFaqData['view']['answers'][] = $faqView['answers'][$key];
         }
