@@ -8,6 +8,18 @@
 use Drupal\node\NodeInterface;
 
 /**
+ * Implements hook_entity_presave().
+ *
+ * Save teaser of answer to title.
+ */
+function iq_faq_multidomain_entity_presave(EntityInterface $entity) {
+  if ($entity->getEntityType()->id() == 'node' && $entity->getType() == 'iq_faq_answer') {
+    $question = \Drupal::routeMatch()->getParameter('node');
+    $entity->title = $question->title->value;
+  }
+}
+
+/**
  * Implements hook_views_pre_render().
  *
  * Collect FAQ patterns from view and store data to global variable.
