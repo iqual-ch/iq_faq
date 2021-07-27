@@ -6,3 +6,4 @@ core: 8.x
 dependencies:
   - iq_faq:iq_faq
   - iq_multidomain_extensions:iq_multidomain_extensions
+  - ief_table_view_mode:ief_table_view_mode
