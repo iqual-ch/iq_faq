@@ -100,7 +100,7 @@ function iq_faq_views_pre_render($view) {
           $nodeResult = $nodeResult->getTranslation($langCode);
         }
 
-        if ($nodeResult->field_iq_answer->value) {
+        if (!$nodeResult->get('field_iq_answer')->isEmpty()) {
           $faqView['questions'][] = $nodeResult->title->value;
           $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
         }
@@ -172,7 +172,7 @@ function iq_faq_metatags_alter(array &$metatags) {
   }
 
   // Add collected FAQ data to metatags.
-  if (is_object($node->field_iq_faq_data) && $node->field_iq_faq_data->value) {
+  if (!$node->get('field_iq_faq_data')->isEmpty()) {
     $faqCollected = unserialize($node->field_iq_faq_data->value);
     if (is_array($faqCollected)) {
       if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
