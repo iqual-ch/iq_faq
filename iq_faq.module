@@ -93,6 +93,12 @@ function iq_faq_views_pre_render($view) {
       'answers' => [],
     ];
 
+    $conditions = [];
+    $faqAnswerConditionPluginManager = \Drupal::service('plugin.manager.iq_faq.faq_answer_condition');
+    foreach ($faqAnswerConditionPluginManager->getDefinitions() as $conditionPlugin) {
+      $conditions[] = $manager->createInstance($conditionPlugin['id']);
+    }
+
     foreach ($view->result as $result) {
       if (get_class($result->_entity) == 'Drupal\node\Entity\Node' && $result->_entity->getType() == 'iq_faq') {
         $nodeResult = $result->_entity;
@@ -102,9 +108,15 @@ function iq_faq_views_pre_render($view) {
 
         if ($nodeResult->field_iq_answers) {
           foreach ($nodeResult->field_iq_answers->referencedEntities() as $answer) {
-            // Add condition whether to add Answer to Metatags or not.
-            $faqView['questions'][] = $nodeResult->title->value;
-            $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($answer->field_iq_answer->value)));
+            // Check whether to add Answer to Metatags or not.
+            $addAnswer = TRUE;
+            foreach ($conditions as $conditionPlugin) {
+              $addAnswer = $addAnswer && $conditionPlugin->verify($nodeResult);
+            }
+            if ($addAnswer) {
+              $faqView['questions'][] = $nodeResult->title->value;
+              $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($answer->field_iq_answer->value)));
+            }
           }
         }
       }

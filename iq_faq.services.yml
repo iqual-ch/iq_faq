@@ -1,0 +1,4 @@
+services:
+   plugin.manager.iq_faq.faq_answer_condition:
+     class: Drupal\iq_faq\FaqAnswerConditionPluginManager
+     parent: default_plugin_manager
