@@ -1,0 +1,34 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.iq_faq_answer.field_iq_answer
+    - node.type.iq_faq_answer
+  module:
+    - text
+id: node.iq_faq_answer.default
+targetEntityType: node
+bundle: iq_faq_answer
+mode: default
+content:
+  field_iq_answer:
+    weight: 0
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: text_textarea
+    region: content
+hidden:
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  publish_on: true
+  published_at: true
+  status: true
+  sticky: true
+  title: true
+  uid: true
+  unpublish_on: true
+  url_redirects: true

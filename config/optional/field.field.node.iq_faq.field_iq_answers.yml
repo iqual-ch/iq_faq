@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_iq_answers
+    - node.type.iq_faq
+    - node.type.iq_faq_answer
+id: node.iq_faq.field_iq_answers
+field_name: field_iq_answers
+entity_type: node
+bundle: iq_faq
+label: Answers
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      iq_faq_answer: iq_faq_answer
+    sort:
+      field: _none
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

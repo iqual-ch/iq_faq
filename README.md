@@ -50,11 +50,20 @@ Apply «Allow html in tags (metatag)» patch:
 
 These patches make it possible to use HTML in the meta tags
 
+Apply Support adding new entities when translating» patch:
 
+     composer patch-add drupal/inline_entity_form 'Support adding new entities when translating' https://www.drupal.org/files/issues/2020-05-16/2822764-57.patch
 
-If needed:
+These patches make it possible link differenty entites for each translation with an inline edit form field.
+
+**Multilingual Websites:**
+- Make the field iq_field_answers translatable: /admin/structure/types/manage/iq_faq/fields/node.iq_faq.field_iq_answers
+- Enable asymetrical translation («Allow user to make asymmetric translation») on widget: «Inline entity form - Complex - Table View Mode»: /admin/structure/types/manage/iq_faq/form-display
+
+**Optional:**
 - Add iq_topics taxonomy field to content types to enable automatic topic selection.
 - Add FAQ as filterable content type in content view
+- Add field field_iq_faq_data to all content types that should display FAQ elements.
 
 
 ## Expected outcome

@@ -100,8 +100,13 @@ function iq_faq_views_pre_render($view) {
           $nodeResult = $nodeResult->getTranslation($langCode);
         }
 
-        $faqView['questions'][] = $nodeResult->title->value;
-        $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
+        if ($nodeResult->field_iq_answers) {
+          foreach ($nodeResult->field_iq_answers->referencedEntities() as $answer) {
+            // Add condition whether to add Answer to Metatags or not.
+            $faqView['questions'][] = $nodeResult->title->value;
+            $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($answer->field_iq_answer->value)));
+          }
+        }
       }
     }
 
@@ -227,4 +232,29 @@ function iq_faq_metatags_alter(array &$metatags) {
  */
 function iq_faq_page_top(&$page_top) {
   $GLOBALS['collect_view_faq_data'] = TRUE;
+}
+
+/**
+ * Implements hook_preprocess_node_add_list().
+ *
+ * Hide iq_faq_answer on node/add page.
+ */
+function iq_faq_preprocess_node_add_list(&$vars) {
+  unset($vars['content']['iq_faq_answer']);
+  unset($vars['types']['iq_faq_answer']);
+}
+
+/**
+ * Implements hook_entity_presave().
+ *
+ * Set question as title field on iq_faq_answer.
+ */
+function iq_faq_entity_presave(EntityInterface $entity) {
+  if ($entity->getEntityType()->id() == 'node' && $entity->getType() == 'iq_faq_answer') {
+    $question = \Drupal::routeMatch()->getParameter('node');
+    $entity->title = 'Answer';
+    if ($question && $question->title->value) {
+      $entity->title = $question->title->value;
+    }
+  }
 }

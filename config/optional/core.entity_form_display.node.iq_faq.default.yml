@@ -2,24 +2,38 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.iq_faq.field_iq_answer
+    - field.field.node.iq_faq.field_iq_answers
     - field.field.node.iq_faq.field_iq_priority
     - field.field.node.iq_faq.field_iq_topics
     - node.type.iq_faq
   module:
-    - text
+    - entity_browser_entity_form
+    - ief_table_view_mode
+    - publication_date
+    - scheduler
 id: node.iq_faq.default
 targetEntityType: node
 bundle: iq_faq
 mode: default
 content:
-  field_iq_answer:
+  field_iq_answers:
     weight: 3
     settings:
-      rows: 5
-      placeholder: ''
-    third_party_settings: {  }
-    type: text_textarea
+      form_mode: default
+      revision: true
+      label_singular: ''
+      label_plural: ''
+      allow_new: true
+      match_operator: CONTAINS
+      override_labels: false
+      collapsible: false
+      collapsed: false
+      allow_existing: false
+      allow_duplicate: false
+    third_party_settings:
+      entity_browser_entity_form:
+        entity_browser_id: _none
+    type: inline_entity_form_complex_table_view_mode
     region: content
   field_iq_priority:
     weight: 1
@@ -37,6 +51,18 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete_tags
     region: content
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  published_at:
+    type: publication_date_timestamp
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
@@ -51,6 +77,12 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 7
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden:
   created: true

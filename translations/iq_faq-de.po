@@ -19,6 +19,12 @@ msgstr "Fügen Sie mehrere durch Kommas getrennte Themen hinzu. Nicht vorhandene
 msgid "Answer"
 msgstr "Antwort"
 
+msgid "Answers"
+msgstr "Antworten"
+
+msgid "FAQ - Answer"
+msgstr "FAQ - Antwort"
+
 msgid "Question"
 msgstr "Fragen"
 

@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.ief_table
+    - field.field.node.iq_faq_answer.field_iq_answer
+    - node.type.iq_faq_answer
+  module:
+    - text
+    - user
+id: node.iq_faq_answer.ief_table
+targetEntityType: node
+bundle: iq_faq_answer
+mode: ief_table
+content:
+  field_iq_answer:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  label: true
+  langcode: true
+  links: true
+  published_at: true
+  status: true

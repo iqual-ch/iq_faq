@@ -3,17 +3,17 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_iq_answer
-    - node.type.iq_faq
+    - node.type.iq_faq_answer
   module:
     - text
-id: node.iq_faq.field_iq_answer
+id: node.iq_faq_answer.field_iq_answer
 field_name: field_iq_answer
 entity_type: node
-bundle: iq_faq
+bundle: iq_faq_answer
 label: Answer
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

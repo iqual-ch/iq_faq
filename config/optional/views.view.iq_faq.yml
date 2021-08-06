@@ -151,7 +151,7 @@ display:
           id: field_iq_answer
           table: node__field_iq_answer
           field: field_iq_answer
-          relationship: none
+          relationship: field_iq_answers
           group_type: group
           admin_label: ''
           label: Answer
@@ -308,7 +308,16 @@ display:
       header: {  }
       footer: {  }
       empty: {  }
-      relationships: {  }
+      relationships:
+        field_iq_answers:
+          id: field_iq_answers
+          table: node__field_iq_answers
+          field: field_iq_answers
+          relationship: none
+          group_type: group
+          admin_label: 'field_iq_answers: Content'
+          required: false
+          plugin_id: standard
       arguments: {  }
       display_extenders: {  }
     cache_metadata:
