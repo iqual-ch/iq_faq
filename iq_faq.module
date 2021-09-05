@@ -100,7 +100,7 @@ function iq_faq_views_pre_render($view) {
           $nodeResult = $nodeResult->getTranslation($langCode);
         }
 
-        if (!$nodeResult->get('field_iq_answer')->isEmpty()) {
+        if ($nodeResult->hasField('field_iq_answer') && !$nodeResult->get('field_iq_answer')->isEmpty()) {
           $faqView['questions'][] = $nodeResult->title->value;
           $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
         }
@@ -169,6 +169,10 @@ function iq_faq_metatags_alter(array &$metatags) {
   $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
   if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
     $node = $node->getTranslation($langCode);
+  }
+
+  if (!$node->hasField('field_iq_faq_data')) {
+    return;
   }
 
   // Add collected FAQ data to metatags.
