@@ -48,7 +48,7 @@ function iq_faq_entity_view_alter(array &$build, EntityInterface $entity, Entity
       $existingFaqData['pattern'] = $faqPatterns;
 
       $node->field_iq_faq_data = serialize($existingFaqData);
-      $node->save();
+      // $node->save();
 
     }
     $GLOBALS['collect_view_faq_data'] = TRUE;
@@ -147,7 +147,7 @@ function iq_faq_views_pre_render($view) {
         }
       }
       $node->field_iq_faq_data = serialize($existingFaqData);
-      $node->save();
+      // $node->save();
     }
   }
 }
@@ -215,7 +215,7 @@ function iq_faq_metatags_alter(array &$metatags) {
     ];
 
     $node->field_iq_faq_data = serialize($faqCollected);
-    $node->save();
+    // $node->save();
   }
 
 }
