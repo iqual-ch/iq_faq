@@ -21,9 +21,11 @@ iq-faq-item:
     - iq-faq-item:
         css:
           component:
+            jquery.ui/accordion.css: {minified: true}
             faq-item.css: {}
         js:
+          jquery.ui/accordion-min.js: {minified: true}
           faq-item.js: {}
         dependencies:
           - core/drupal
-          - core/jquery.ui.accordion
+          - iq_barrio/jquery.ui
