@@ -9,8 +9,8 @@
     }
   ],
   "require": {
-    "iqual/pagedesigner_block_adaptable": "^0.5",
-    "iqual/iq_metatag_extension": "*",
+    "iqual/pagedesigner_block_adaptable": "^2.0",
+    "iqual/iq_metatag_extension": "^2.0",
     "drupal/schema_metatag": "1.*"
   }
 }
