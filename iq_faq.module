@@ -17,42 +17,42 @@ use Drupal\Core\Url;
  */
 function iq_faq_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
 
-  if (array_key_exists('field_pagedesigner_content', $build)) {
+  // if (array_key_exists('field_pagedesigner_content', $build)) {
 
-    $faqPatterns = _recursive_search_faq_pattern($build['field_pagedesigner_content'][0], [
-      'questions' => [],
-      'answers' => [],
-    ]);
+  //   $faqPatterns = _recursive_search_faq_pattern($build['field_pagedesigner_content'][0], [
+  //     'questions' => [],
+  //     'answers' => [],
+  //   ]);
 
-    $node = \Drupal::routeMatch()->getParameter('node');
+  //   $node = \Drupal::routeMatch()->getParameter('node');
 
-    if (!$node instanceof NodeInterface) {
-      return;
-    }
+  //   if (!$node instanceof NodeInterface) {
+  //     return;
+  //   }
 
-    $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-    if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-      $node = $node->getTranslation($langCode);
-    }
+  //   $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  //   if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
+  //     $node = $node->getTranslation($langCode);
+  //   }
 
-    // Store collected FAQ data to node.
-    if (\count($faqPatterns['questions'])) {
-      $existingFaqData = [
-        'pattern' => [],
-      ];
+  //   // Store collected FAQ data to node.
+  //   if (\count($faqPatterns['questions'])) {
+  //     $existingFaqData = [
+  //       'pattern' => [],
+  //     ];
 
-      if ($node->field_iq_faq_data->value) {
-        $existingFaqData = unserialize($node->field_iq_faq_data->value);
-      }
+  //     if ($node->field_iq_faq_data->value) {
+  //       $existingFaqData = unserialize($node->field_iq_faq_data->value);
+  //     }
 
-      $existingFaqData['pattern'] = $faqPatterns;
+  //     $existingFaqData['pattern'] = $faqPatterns;
 
-      $node->field_iq_faq_data = serialize($existingFaqData);
-      $node->save();
+  //     $node->field_iq_faq_data = serialize($existingFaqData);
+  //     $node->save();
 
-    }
-    $GLOBALS['collect_view_faq_data'] = TRUE;
-  }
+  //   }
+  //   $GLOBALS['collect_view_faq_data'] = TRUE;
+  // }
 }
 
 /**
@@ -84,74 +84,74 @@ function _recursive_search_faq_pattern($array, $return = []) {
  */
 function iq_faq_views_pre_render($view) {
 
-  if (array_key_exists('collect_view_faq_data', $GLOBALS) && $GLOBALS['collect_view_faq_data'] && $view->id() == 'iq_faq') {
+  // if (array_key_exists('collect_view_faq_data', $GLOBALS) && $GLOBALS['collect_view_faq_data'] && $view->id() == 'iq_faq') {
 
-    $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  //   $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
-    $faqView = [
-      'questions' => [],
-      'answers' => [],
-    ];
+  //   $faqView = [
+  //     'questions' => [],
+  //     'answers' => [],
+  //   ];
 
-    foreach ($view->result as $result) {
-      if (get_class($result->_entity) == 'Drupal\node\Entity\Node' && $result->_entity->getType() == 'iq_faq') {
-        $nodeResult = $result->_entity;
-        if ($nodeResult instanceof NodeInterface && $nodeResult->hasTranslation($langCode)) {
-          $nodeResult = $nodeResult->getTranslation($langCode);
-        }
+  //   foreach ($view->result as $result) {
+  //     if (get_class($result->_entity) == 'Drupal\node\Entity\Node' && $result->_entity->getType() == 'iq_faq') {
+  //       $nodeResult = $result->_entity;
+  //       if ($nodeResult instanceof NodeInterface && $nodeResult->hasTranslation($langCode)) {
+  //         $nodeResult = $nodeResult->getTranslation($langCode);
+  //       }
 
-        if ($nodeResult->hasField('field_iq_answer') && !$nodeResult->get('field_iq_answer')->isEmpty()) {
-          $faqView['questions'][] = $nodeResult->title->value;
-          $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
-        }
-      }
-    }
+  //       if ($nodeResult->hasField('field_iq_answer') && !$nodeResult->get('field_iq_answer')->isEmpty()) {
+  //         $faqView['questions'][] = $nodeResult->title->value;
+  //         $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
+  //       }
+  //     }
+  //   }
 
-    // Store collected FAQ data to node.
-    if (\count($faqView['questions'])) {
+  //   // Store collected FAQ data to node.
+  //   if (\count($faqView['questions'])) {
 
-      $node = \Drupal::routeMatch()->getParameter('node');
-      if (!$node instanceof NodeInterface) {
-        return;
-      }
+  //     $node = \Drupal::routeMatch()->getParameter('node');
+  //     if (!$node instanceof NodeInterface) {
+  //       return;
+  //     }
 
-      if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-        $node = $node->getTranslation($langCode);
-      }
+  //     if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
+  //       $node = $node->getTranslation($langCode);
+  //     }
 
-      $existingFaqData = FALSE;
-      if ($node->field_iq_faq_data->value) {
-        $existingFaqData = unserialize($node->field_iq_faq_data->value);
-      }
+  //     $existingFaqData = FALSE;
+  //     if ($node->field_iq_faq_data->value) {
+  //       $existingFaqData = unserialize($node->field_iq_faq_data->value);
+  //     }
 
-      if (is_array($existingFaqData)) {
-        if (!array_key_exists('view', $existingFaqData)) {
-          $existingFaqData['view'] = [
-            'questions' => [],
-            'answers' => [],
-          ];
-        }
-      }
-      else {
-        $existingFaqData = [
-          'view' => [
-            'questions' => [],
-            'answers' => [],
-          ],
-        ];
-      }
+  //     if (is_array($existingFaqData)) {
+  //       if (!array_key_exists('view', $existingFaqData)) {
+  //         $existingFaqData['view'] = [
+  //           'questions' => [],
+  //           'answers' => [],
+  //         ];
+  //       }
+  //     }
+  //     else {
+  //       $existingFaqData = [
+  //         'view' => [
+  //           'questions' => [],
+  //           'answers' => [],
+  //         ],
+  //       ];
+  //     }
 
-      foreach ($faqView['questions'] as $key => $question) {
-        if (!in_array($question, $existingFaqData['view']['questions'])) {
+  //     foreach ($faqView['questions'] as $key => $question) {
+  //       if (!in_array($question, $existingFaqData['view']['questions'])) {
 
-          $existingFaqData['view']['questions'][] = $question;
-          $existingFaqData['view']['answers'][] = $faqView['answers'][$key];
-        }
-      }
-      $node->field_iq_faq_data = serialize($existingFaqData);
-      $node->save();
-    }
-  }
+  //         $existingFaqData['view']['questions'][] = $question;
+  //         $existingFaqData['view']['answers'][] = $faqView['answers'][$key];
+  //       }
+  //     }
+  //     $node->field_iq_faq_data = serialize($existingFaqData);
+  //     $node->save();
+  //   }
+  // }
 }
 
 /**
@@ -160,69 +160,69 @@ function iq_faq_views_pre_render($view) {
  * Read FAQ data from node and add it to metagas.
  */
 function iq_faq_metatags_alter(array &$metatags) {
-  $node = \Drupal::routeMatch()->getParameter('node');
+  // $node = \Drupal::routeMatch()->getParameter('node');
 
-  if (!$node instanceof NodeInterface) {
-    return;
-  }
+  // if (!$node instanceof NodeInterface) {
+  //   return;
+  // }
 
-  $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-  if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-    $node = $node->getTranslation($langCode);
-  }
+  // $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  // if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
+  //   $node = $node->getTranslation($langCode);
+  // }
 
-  if (!$node->hasField('field_iq_faq_data')) {
-    return;
-  }
+  // if (!$node->hasField('field_iq_faq_data')) {
+  //   return;
+  // }
 
-  // Add collected FAQ data to metatags.
-  if (!$node->get('field_iq_faq_data')->isEmpty()) {
-    $faqCollected = unserialize($node->field_iq_faq_data->value);
-    if (is_array($faqCollected)) {
-      if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
-        $schemaFAQ = unserialize($metatags['schema_qa_page_main_entity']);
-      }
-      else {
-        $schemaFAQ = [
-          'pivot' => 1,
-          '@type' => 'Question',
-          'name'  => '',
-          'acceptedAnswer' => [
-            'pivot' => 1,
-            '@type' => 'Answer',
-            'text'  => '',
-          ],
-        ];
-      }
+  // // Add collected FAQ data to metatags.
+  // if (!$node->get('field_iq_faq_data')->isEmpty()) {
+  //   $faqCollected = unserialize($node->field_iq_faq_data->value);
+  //   if (is_array($faqCollected)) {
+  //     if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
+  //       $schemaFAQ = unserialize($metatags['schema_qa_page_main_entity']);
+  //     }
+  //     else {
+  //       $schemaFAQ = [
+  //         'pivot' => 1,
+  //         '@type' => 'Question',
+  //         'name'  => '',
+  //         'acceptedAnswer' => [
+  //           'pivot' => 1,
+  //           '@type' => 'Answer',
+  //           'text'  => '',
+  //         ],
+  //       ];
+  //     }
 
-      $hasFaqItems = FALSE;
-      foreach ($faqCollected as $regionID => $region) {
-        if (is_array($region) && array_key_exists('questions', $region) && is_array($region['questions'])) {
-          if (\count($region['questions'])) {
-            $schemaFAQ['name'] .= '::' . implode('::', $region['questions']);
-            $schemaFAQ['acceptedAnswer']['text'] .= '::' . implode('::', $region['answers']);
-            $hasFaqItems = TRUE;
-          }
-        }
-      }
-      $schemaFAQ['name'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['name'], '::')));
-      $schemaFAQ['acceptedAnswer']['text'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['acceptedAnswer']['text'], '::')));
-      $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
+  //     $hasFaqItems = FALSE;
+  //     foreach ($faqCollected as $regionID => $region) {
+  //       if (is_array($region) && array_key_exists('questions', $region) && is_array($region['questions'])) {
+  //         if (\count($region['questions'])) {
+  //           $schemaFAQ['name'] .= '::' . implode('::', $region['questions']);
+  //           $schemaFAQ['acceptedAnswer']['text'] .= '::' . implode('::', $region['answers']);
+  //           $hasFaqItems = TRUE;
+  //         }
+  //       }
+  //     }
+  //     $schemaFAQ['name'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['name'], '::')));
+  //     $schemaFAQ['acceptedAnswer']['text'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['acceptedAnswer']['text'], '::')));
+  //     $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
 
-      if ($hasFaqItems) {
-        $metatags['schema_qa_page_type'] = 'FAQPage';
-        $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
-      }
-    }
+  //     if ($hasFaqItems) {
+  //       $metatags['schema_qa_page_type'] = 'FAQPage';
+  //       $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
+  //     }
+  //   }
 
-    $faqCollected['view'] = [
-      'questions' => [],
-      'answers' => [],
-    ];
+  //   $faqCollected['view'] = [
+  //     'questions' => [],
+  //     'answers' => [],
+  //   ];
 
-    $node->field_iq_faq_data = serialize($faqCollected);
-    $node->save();
-  }
+  //   $node->field_iq_faq_data = serialize($faqCollected);
+  //   $node->save();
+  // }
 
 }
 
@@ -232,5 +232,5 @@ function iq_faq_metatags_alter(array &$metatags) {
  * Tell hook_views_pre_render to collect view FAQ data.
  */
 function iq_faq_page_top(&$page_top) {
-  $GLOBALS['collect_view_faq_data'] = TRUE;
+  // $GLOBALS['collect_view_faq_data'] = TRUE;
 }
