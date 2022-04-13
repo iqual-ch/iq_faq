@@ -10,7 +10,7 @@ use Drupal\Core\Url;
 /**
  * Implements hook_metatags_alter().
  *
- * Read FAQ data from node and add it to metagas.
+ * Read FAQ data from rendered node content and add it to metatags.
  */
 function iq_faq_metatags_alter(array &$metatags) {
 
