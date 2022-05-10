@@ -15,6 +15,17 @@ use Drupal\Core\Url;
 function iq_faq_metatags_alter(array &$metatags) {
 
   foreach (\Drupal::routeMatch()->getParameters()->all() as $entityType => $entity) {
+
+    // Check if entity is object.
+    if (!is_object($entity)) {
+      continue;
+    }
+
+    // Check if view_builder exists for given entity.
+    if (!\Drupal::service('entity_type.manager')->hasHandler($entityType, 'view_builder')) {
+      continue;
+    }
+
     $builder = \Drupal::service('entity_type.manager')->getViewBuilder($entityType);
     $build = $builder->view($entity, 'full');
     $output = \Drupal::service('renderer')->renderPlain($build);
