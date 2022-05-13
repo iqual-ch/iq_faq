@@ -5,226 +5,70 @@
  * Contains iq_faq.module.
  */
 
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\node\NodeInterface;
 use Drupal\Core\Url;
-
-/**
- * Implements hook_entity_view_alter().
- *
- * Collect manually created FAQ patterns and store data to node.
- */
-function iq_faq_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
-
-  // if (array_key_exists('field_pagedesigner_content', $build)) {
-
-  //   $faqPatterns = _recursive_search_faq_pattern($build['field_pagedesigner_content'][0], [
-  //     'questions' => [],
-  //     'answers' => [],
-  //   ]);
-
-  //   $node = \Drupal::routeMatch()->getParameter('node');
-
-  //   if (!$node instanceof NodeInterface) {
-  //     return;
-  //   }
-
-  //   $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-  //   if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-  //     $node = $node->getTranslation($langCode);
-  //   }
-
-  //   // Store collected FAQ data to node.
-  //   if (\count($faqPatterns['questions'])) {
-  //     $existingFaqData = [
-  //       'pattern' => [],
-  //     ];
-
-  //     if ($node->field_iq_faq_data->value) {
-  //       $existingFaqData = unserialize($node->field_iq_faq_data->value);
-  //     }
-
-  //     $existingFaqData['pattern'] = $faqPatterns;
-
-  //     $node->field_iq_faq_data = serialize($existingFaqData);
-  //     $node->save();
-
-  //   }
-  //   $GLOBALS['collect_view_faq_data'] = TRUE;
-  // }
-}
-
-/**
- * Private function to recursivle seach FAQ patterns.
- */
-function _recursive_search_faq_pattern($array, $return = []) {
-  foreach ($array as $element) {
-    if (is_array($element) && array_key_exists('#pagedesigner_entity', $element) && $element['#pagedesigner_entity']->getHandlerType() == 'row') {
-      if (array_key_exists('#fields', $element)) {
-        foreach ($element['#fields'] as $columnElement) {
-          $return = _recursive_search_faq_pattern($columnElement, $return);
-        }
-      }
-    }
-    if (is_array($element) && array_key_exists('#id', $element) && $element['#id'] == 'iq-faq-item') {
-      if (!in_array($element['#fields']['question']['#markup'], $return['questions'])) {
-        $return['questions'][] = $element['#fields']['question']['#markup'];
-        $return['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($element['#fields']['answer']['#text'])));
-      }
-    }
-  }
-  return $return;
-}
-
-/**
- * Implements hook_views_pre_render().
- *
- * Collect FAQ patterns from view and store data to global variable.
- */
-function iq_faq_views_pre_render($view) {
-
-  // if (array_key_exists('collect_view_faq_data', $GLOBALS) && $GLOBALS['collect_view_faq_data'] && $view->id() == 'iq_faq') {
-
-  //   $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-
-  //   $faqView = [
-  //     'questions' => [],
-  //     'answers' => [],
-  //   ];
-
-  //   foreach ($view->result as $result) {
-  //     if (get_class($result->_entity) == 'Drupal\node\Entity\Node' && $result->_entity->getType() == 'iq_faq') {
-  //       $nodeResult = $result->_entity;
-  //       if ($nodeResult instanceof NodeInterface && $nodeResult->hasTranslation($langCode)) {
-  //         $nodeResult = $nodeResult->getTranslation($langCode);
-  //       }
-
-  //       $faqView['questions'][] = $nodeResult->title->value;
-  //       $faqView['answers'][] = trim(preg_replace('/\s+/', ' ', strip_tags($nodeResult->field_iq_answer->value)));
-  //     }
-  //   }
-
-  //   // Store collected FAQ data to node.
-  //   if (\count($faqView['questions'])) {
-
-  //     $node = \Drupal::routeMatch()->getParameter('node');
-  //     if (!$node instanceof NodeInterface) {
-  //       return;
-  //     }
-
-  //     if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-  //       $node = $node->getTranslation($langCode);
-  //     }
-
-  //     $existingFaqData = FALSE;
-  //     if ($node->field_iq_faq_data->value) {
-  //       $existingFaqData = unserialize($node->field_iq_faq_data->value);
-  //     }
-
-  //     if (is_array($existingFaqData)) {
-  //       if (!array_key_exists('view', $existingFaqData)) {
-  //         $existingFaqData['view'] = [
-  //           'questions' => [],
-  //           'answers' => [],
-  //         ];
-  //       }
-  //     }
-  //     else {
-  //       $existingFaqData = [
-  //         'view' => [
-  //           'questions' => [],
-  //           'answers' => [],
-  //         ],
-  //       ];
-  //     }
-
-  //     foreach ($faqView['questions'] as $key => $question) {
-  //       if (!in_array($question, $existingFaqData['view']['questions'])) {
-
-  //         $existingFaqData['view']['questions'][] = $question;
-  //         $existingFaqData['view']['answers'][] = $faqView['answers'][$key];
-  //       }
-  //     }
-  //     $node->field_iq_faq_data = serialize($existingFaqData);
-  //     $node->save();
-  //   }
-  // }
-}
 
 /**
  * Implements hook_metatags_alter().
  *
- * Read FAQ data from node and add it to metagas.
+ * Read FAQ data from rendered node content and add it to metatags.
  */
 function iq_faq_metatags_alter(array &$metatags) {
-  // $node = \Drupal::routeMatch()->getParameter('node');
 
-  // if (!$node instanceof NodeInterface) {
-  //   return;
-  // }
+  foreach (\Drupal::routeMatch()->getParameters()->all() as $entityType => $entity) {
 
-  // $langCode = \Drupal::languageManager()->getCurrentLanguage()->getId();
-  // if ($node instanceof NodeInterface && $node->hasTranslation($langCode)) {
-  //   $node = $node->getTranslation($langCode);
-  // }
+    // Check if entity is object.
+    if (!is_object($entity)) {
+      continue;
+    }
 
-  // // Add collected FAQ data to metatags.
-  // if (is_object($node->field_iq_faq_data) && $node->field_iq_faq_data->value) {
-  //   $faqCollected = unserialize($node->field_iq_faq_data->value);
-  //   if (is_array($faqCollected)) {
-  //     if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
-  //       $schemaFAQ = unserialize($metatags['schema_qa_page_main_entity']);
-  //     }
-  //     else {
-  //       $schemaFAQ = [
-  //         'pivot' => 1,
-  //         '@type' => 'Question',
-  //         'name'  => '',
-  //         'acceptedAnswer' => [
-  //           'pivot' => 1,
-  //           '@type' => 'Answer',
-  //           'text'  => '',
-  //         ],
-  //       ];
-  //     }
+    // Check if view_builder exists for given entity.
+    if (!\Drupal::service('entity_type.manager')->hasHandler($entityType, 'view_builder')) {
+      continue;
+    }
 
-  //     $hasFaqItems = FALSE;
-  //     foreach ($faqCollected as $regionID => $region) {
-  //       if (is_array($region) && array_key_exists('questions', $region) && is_array($region['questions'])) {
-  //         if (\count($region['questions'])) {
-  //           $schemaFAQ['name'] .= '::' . implode('::', $region['questions']);
-  //           $schemaFAQ['acceptedAnswer']['text'] .= '::' . implode('::', $region['answers']);
-  //           $hasFaqItems = TRUE;
-  //         }
-  //       }
-  //     }
-  //     $schemaFAQ['name'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['name'], '::')));
-  //     $schemaFAQ['acceptedAnswer']['text'] = trim(preg_replace('/\s+/', ' ', trim($schemaFAQ['acceptedAnswer']['text'], '::')));
-  //     $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
+    $builder = \Drupal::service('entity_type.manager')->getViewBuilder($entityType);
+    $build = $builder->view($entity, 'full');
+    $output = \Drupal::service('renderer')->renderPlain($build);
 
-  //     if ($hasFaqItems) {
-  //       $metatags['schema_qa_page_type'] = 'FAQPage';
-  //       $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
-  //     }
-  //   }
+    $dom = new DOMDocument();
+    $dom->loadHTML($output, LIBXML_NOERROR);
+    $finder = new DomXPath($dom);
 
-  //   $faqCollected['view'] = [
-  //     'questions' => [],
-  //     'answers' => [],
-  //   ];
+    // Search content for iq-faq-item elements.
+    $questions = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-question ')]"));
+    $answers = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-answer ')]"));
 
-  //   $node->field_iq_faq_data = serialize($faqCollected);
-  //   $node->save();
-  // }
+    if (count($questions)) {
+      if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
+        $schemaFAQ = unserialize($metatags['schema_qa_page_main_entity']);
+      }
+      else {
+        $schemaFAQ = [
+          'pivot' => 1,
+          '@type' => 'Question',
+          'name'  => '',
+          'acceptedAnswer' => [
+            'pivot' => 1,
+            '@type' => 'Answer',
+            'text'  => '',
+          ],
+        ];
+      }
 
-}
+      $questions = array_map(function ($question) {
+        return trim(strip_tags($question->ownerDocument->saveXML($question)));
+      }, $questions);
 
-/**
- * Implements hook_page_top().
- *
- * Tell hook_views_pre_render to collect view FAQ data.
- */
-function iq_faq_page_top(&$page_top) {
-  $GLOBALS['collect_view_faq_data'] = TRUE;
+      $answers = array_map(function ($answer) {
+        return trim(strip_tags($answer->ownerDocument->saveXML($answer)));
+      }, $answers);
+
+      $schemaFAQ['name'] = trim(implode('::', array_merge(explode('::', trim($schemaFAQ['name'], '::')), $questions)), '::');
+      $schemaFAQ['acceptedAnswer']['text'] = trim(implode('::', array_merge(explode('::', trim($schemaFAQ['acceptedAnswer']['text'], '::')), $answers)), '::');
+      $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
+      $metatags['schema_qa_page_type'] = 'FAQPage';
+      $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
+    }
+  }
+
 }

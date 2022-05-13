@@ -20,9 +20,6 @@ Install module
     composer require iqual/iq_faq
     drush en iq_faq
 
-Add field *field_iq_faq_data* to node types that should hold FAQ data (e.g. page) and make sure it's hidden in the form display as well in the node's display.
-
-
 
 Compile CSS
 
