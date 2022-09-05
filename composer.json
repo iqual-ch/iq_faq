@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "iqual/pagedesigner_block_adaptable": "^2.0",
+    "drupal/pagedesigner_block_adaptable": "^2.0",
     "iqual/iq_metatag_extension": "^2.0",
     "drupal/schema_metatag": "1.*"
   }
