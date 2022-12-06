@@ -7,7 +7,7 @@
       collapsible: true,
       active: false,
       activate: function( event, ui ) {
-        if(!$.isEmptyObject(ui.newHeader.offset())) {
+        if(!$.isEmptyObject(ui.newHeader.offset()) && window.scrollOffset > 0) {
           $('html:not(:animated), body:not(:animated)').animate({ scrollTop: ui.newHeader.offset().top - window.scrollOffset }, 'slow');
         }
       }
