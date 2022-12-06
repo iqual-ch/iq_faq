@@ -1,4 +1,5 @@
 (function ($, Drupal) {
+  setListenerForScrollOffsetCalculation('scroll, resize');
   function generateAccordion($stacks) {
     var definition = { icons: false, heightStyle: 'content', collapsible: true, active: false };
     var $first = null;
