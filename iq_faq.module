@@ -89,5 +89,4 @@ function iq_faq_form_alter(array &$form, FormStateInterface $form_state, $form_i
       $form['#parents'] = $parents;
     }
   }
-
 }
