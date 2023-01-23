@@ -7,8 +7,10 @@
       collapsible: true,
       active: false,
       activate: function( event, ui ) {
-        if(!$.isEmptyObject(ui.newHeader.offset()) && window.scrollOffset > 0) {
-          $('html:not(:animated), body:not(:animated)').animate({ scrollTop: ui.newHeader.offset().top - window.scrollOffset }, 'slow');
+        if(!$.isEmptyObject(ui.newHeader.offset()) && !$.isEmptyObject(ui.newHeader.offset()) && !$.isEmptyObject(ui.newPanel) && !$.isEmptyObject(ui.oldPanel)) {
+          if ((ui.oldPanel.outerHeight() > $(window).height()) && (ui.newHeader.offset().top > ui.oldHeader.offset().top))   {
+            $('html:not(:animated), body:not(:animated)').animate({ scrollTop: ui.newHeader.offset().top - window.scrollOffset }, 'slow');
+          }
         }
       }
     };
