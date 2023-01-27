@@ -1,6 +1,19 @@
 (function ($, Drupal) {
+  setListenerForScrollOffsetCalculation('scroll, resize');
   function generateAccordion($stacks) {
-    var definition = { icons: false, heightStyle: 'content', collapsible: true, active: false };
+    var definition = {
+      icons: false,
+      heightStyle: 'content',
+      collapsible: true,
+      active: false,
+      activate: function( event, ui ) {
+        if(!$.isEmptyObject(ui.newHeader.offset()) && !$.isEmptyObject(ui.newHeader.offset()) && !$.isEmptyObject(ui.newPanel) && !$.isEmptyObject(ui.oldPanel)) {
+          if ((ui.oldPanel.outerHeight() > $(window).height()) && (ui.newHeader.offset().top > ui.oldHeader.offset().top))   {
+            $('html:not(:animated), body:not(:animated)').animate({ scrollTop: ui.newHeader.offset().top - window.scrollOffset }, 'slow');
+          }
+        }
+      }
+    };
     var $first = null;
     var newGroup = true;
     var type = '';
