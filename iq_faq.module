@@ -84,9 +84,7 @@ function iq_faq_metatags_alter(array &$metatags) {
 function iq_faq_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
   if (\Drupal::state()->get('render_for_faq_extraction', FALSE)) {
     if (strpos($form_id, "webform_submission") !== FALSE) {
-      $parents = $form['#parents'];
-      $form = [];
-      $form['#parents'] = $parents;
+      $form['#access'] = FALSE;
     }
   }
 }
