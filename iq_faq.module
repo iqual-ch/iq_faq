@@ -45,20 +45,26 @@ function iq_faq_metatags_alter(array &$metatags) {
     $answers = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-answer ')]"));
 
     if (count($questions)) {
-      if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
-        $schemaFAQ = unserialize($metatags['schema_qa_page_main_entity']);
-      }
-      else {
-        $schemaFAQ = [
+
+      $schemaFAQ = [
+        'pivot' => 1,
+        '@type' => 'Question',
+        'name'  => '',
+        'acceptedAnswer' => [
           'pivot' => 1,
-          '@type' => 'Question',
-          'name'  => '',
-          'acceptedAnswer' => [
-            'pivot' => 1,
-            '@type' => 'Answer',
-            'text'  => '',
-          ],
-        ];
+          '@type' => 'Answer',
+          'text'  => '',
+        ],
+      ];
+
+      if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
+        $metatagsFaq = unserialize($metatags['schema_qa_page_main_entity']);
+        if (array_key_exists('name', $metatagsFaq)) {
+          if (array_key_exists('acceptedAnswer', $metatagsFaq) && array_key_exists('text', $metatagsFaq['acceptedAnswer'])) {
+            $schemaFAQ['name'] = $metatagsFaq['name'];
+            $schemaFAQ['acceptedAnswer']['text'] = $metatagsFaq['acceptedAnswer']['text'];
+          }
+        }
       }
 
       $questions = array_map(function ($question) {
