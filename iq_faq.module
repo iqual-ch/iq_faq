@@ -15,8 +15,12 @@ use Drupal\Core\Form\FormStateInterface;
  */
 function iq_faq_metatags_alter(array &$metatags) {
 
-  foreach (\Drupal::routeMatch()->getParameters()->all() as $entityType => $entity) {
+  // Only process metatags on GET requests.
+  if (\Drupal::request()->getMethod() !== 'GET') {
+    return;
+  }
 
+  foreach (\Drupal::routeMatch()->getParameters()->all() as $entityType => $entity) {
     // Check if entity is object.
     if (!is_object($entity)) {
       continue;
@@ -28,11 +32,9 @@ function iq_faq_metatags_alter(array &$metatags) {
     }
 
     // Render current page for metatag extraction.
-    \Drupal::state()->set('render_for_faq_extraction', TRUE);
     $builder = \Drupal::service('entity_type.manager')->getViewBuilder($entityType);
     $build = $builder->view($entity, 'full');
     $output = \Drupal::service('renderer')->renderPlain($build);
-    \Drupal::state()->delete('render_for_faq_extraction');
 
     $dom = new DOMDocument();
     $dom->loadHTML($output, LIBXML_NOERROR);
@@ -72,19 +74,6 @@ function iq_faq_metatags_alter(array &$metatags) {
       $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
       $metatags['schema_qa_page_type'] = 'FAQPage';
       $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
-    }
-  }
-}
-
-/**
- * Implements hook_form_alter().
- *
- * Remove webforms when rendering page for FAQ extraction.
- */
-function iq_faq_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
-  if (\Drupal::state()->get('render_for_faq_extraction', FALSE)) {
-    if (strpos($form_id, "webform_submission") !== FALSE) {
-      $form['#access'] = FALSE;
     }
   }
 }
