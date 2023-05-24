@@ -5,11 +5,16 @@ FAQ module for pagedesigner.
 
 
 ## Background
-Setting up FAQ pages is very time-consuming, especially if they have to comply with schma.org standards. Another problem is the fact that we often have different pages showing the same question, which leads to unnecessary redundancies.
+Setting up FAQ pages is very time-consuming, especially if they have to comply
+with schma.org standards. Another problem is the fact that we often have
+different pages showing the same question, which leads to unnecessary
+redundancies.
 
 The purpose of this module is to solve both problems by
-1. Introducing an FAQ pattern that automatically adds the question and answer to the schema.org metatags
-2. Introducing an FAQ node type multiple several view blocks available in Pagedesigner:
+1. Introducing an FAQ pattern that automatically adds the question and answer
+   to the schema.org metatags
+2. Introducing an FAQ node type multiple several view blocks available in
+   Pagedesigner:
 	- **Manual selection**: Manually choose Questions (todo: multiple choice)
 	- **Manual topic selection**: Manually choose topics as filter criteria
 	- **Automatic topic selection**: Use the page's topics as fiter criteria
@@ -31,7 +36,8 @@ Apply «Change pivot» patch:
      cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
      composer patch-add drupal/schema_metatag 'Change pivot' patches/20191126_change-pivot_schema-metatag.patch
 
-This patch changes delimiters for questions and answers to two colons (::) instead of one comma (,).
+This patch changes delimiters for questions and answers to two colons (::)
+instead of one comma (,).
 
 
 
@@ -50,7 +56,8 @@ These patches make it possible to use HTML in the meta tags
 
 
 If needed:
-- Add iq_topics taxonomy field to content types to enable automatic topic selection.
+- Add iq_topics taxonomy field to content types to enable
+  automatic topic selection.
 - Add FAQ as filterable content type in content view
 
 
@@ -62,4 +69,5 @@ After the installation there should be:
 - New content type FAQ
 - 3 FAQ View blocks available as pagedesigner components
 
-Whenever an FAQ pattern is rendered on a page, its content (question & answer) should be added to the page's metadata.
+Whenever an FAQ pattern is rendered on a page, its content (question & answer)
+should be added to the page's metadata.

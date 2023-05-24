@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Url;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_metatags_alter().
@@ -58,7 +57,9 @@ function iq_faq_metatags_alter(array &$metatags) {
       ];
 
       if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
-        $metatagsFaq = unserialize($metatags['schema_qa_page_main_entity']);
+        $metatagsFaq = unserialize($metatags['schema_qa_page_main_entity'], [
+          'allowed_classes' => FALSE,
+        ]);
         if (array_key_exists('name', $metatagsFaq)) {
           if (array_key_exists('acceptedAnswer', $metatagsFaq) && array_key_exists('text', $metatagsFaq['acceptedAnswer'])) {
             $schemaFAQ['name'] = $metatagsFaq['name'];
