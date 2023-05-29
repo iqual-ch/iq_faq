@@ -11,6 +11,7 @@
   "require": {
     "drupal/pagedesigner_block_adaptable": "^2.0",
     "iqual/iq_metatag_extension": "^2.0",
-    "drupal/schema_metatag": "1.*"
+    "drupal/schema_metatag": "^1.0",
+    "drupal/metatag": "1.23"
   }
 }
