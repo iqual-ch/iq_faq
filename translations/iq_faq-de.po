@@ -1,10 +1,10 @@
-# German translation of iq_blog
-#
+msgid ""
+msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2019-12-12 10:48+0000\n"
 "PO-Revision-Date: 2019-12-12 10:48+0000\n"
-"Last-Translator: iqual GmbH <support@iqual.ch>\n"
-"Language-Team: iqual GmbH <support@iqual.ch>\n"
+"Last-Translator: iqual AG <support@iqual.ch>\n"
+"Language-Team: iqual AG <support@iqual.ch>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
