@@ -2,7 +2,7 @@ name: iqual FAQ
 description: FAQ module
 package: iqual FAQ
 type: module
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.5 || ^10
 dependencies:
   - core:options
   - pagedesigner_block_adaptable:pagedesigner_block_adaptable
