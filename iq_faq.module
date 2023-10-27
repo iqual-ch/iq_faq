@@ -68,16 +68,12 @@ function iq_faq_metatags_alter(array &$metatags) {
         }
       }
 
-      $questions = array_map(function ($question) {
-        return trim(strip_tags($question->ownerDocument->saveXML($question)));
-      }, $questions);
+      $questions = array_map(fn($question) => trim(strip_tags((string) $question->ownerDocument->saveXML($question))), $questions);
 
-      $answers = array_map(function ($answer) {
-        return trim(strip_tags($answer->ownerDocument->saveXML($answer)));
-      }, $answers);
+      $answers = array_map(fn($answer) => trim(strip_tags((string) $answer->ownerDocument->saveXML($answer))), $answers);
 
-      $schemaFAQ['name'] = trim(implode('::', array_merge(explode('::', trim($schemaFAQ['name'], '::')), $questions)), '::');
-      $schemaFAQ['acceptedAnswer']['text'] = trim(implode('::', array_merge(explode('::', trim($schemaFAQ['acceptedAnswer']['text'], '::')), $answers)), '::');
+      $schemaFAQ['name'] = trim(implode('::', array_merge(explode('::', trim((string) $schemaFAQ['name'], '::')), $questions)), '::');
+      $schemaFAQ['acceptedAnswer']['text'] = trim(implode('::', array_merge(explode('::', trim((string) $schemaFAQ['acceptedAnswer']['text'], '::')), $answers)), '::');
       $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
       $metatags['schema_qa_page_type'] = 'FAQPage';
       $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
