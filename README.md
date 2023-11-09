@@ -25,35 +25,9 @@ Install module
     composer require iqual/iq_faq
     drush en iq_faq
 
-
 Compile CSS
 
     drush iq_barrio_helper:sass-compile
-
-
-Apply «Change pivot» patch:
-
-     cp public/modules/custom/iq_faq/patches/20191126_change-pivot_schema-metatag.patch patches/20191126_change-pivot_schema-metatag.patch
-     composer patch-add drupal/schema_metatag 'Change pivot' patches/20191126_change-pivot_schema-metatag.patch
-
-This patch changes delimiters for questions and answers to two colons (::)
-instead of one comma (,).
-
-
-
-Apply «Allow html in tags (schema metatag)» patch:
-
-     cp public/modules/custom/iq_metatag_extension/patches/20191023_html-in-tags_schema-metatag.patch patches/20191023_html-in-tags_schema-metatag.patch
-     composer patch-add drupal/schema_metatag 'Allow html in tags (schema metatag)' patches/20191023_html-in-tags_schema-metatag.patch
-
-Apply «Allow html in tags (metatag)» patch:
-
-     cp public/modules/custom/iq_metatag_extension/patches/20200331_html-in-tags_metatag.patch patches/20200331_html-in-tags_metatag.patch
-     composer patch-add drupal/metatag 'Allow html in tags (metatag)' patches/20200331_html-in-tags_metatag.patch
-
-These patches make it possible to use HTML in the meta tags
-
-
 
 If needed:
 - Add iq_topics taxonomy field to content types to enable
