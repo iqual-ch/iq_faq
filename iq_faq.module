@@ -13,7 +13,9 @@ use Drupal\Core\Url;
  * Read FAQ data from rendered node content and add it to metatags.
  */
 function iq_faq_metatags_alter(array &$metatags) {
-
+  if (\Drupal::currentUser()->isAuthenticated()) {
+    return;
+  }
   // Only process metatags on GET requests.
   if (\Drupal::request()->getMethod() !== 'GET') {
     return;
