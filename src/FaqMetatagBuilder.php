@@ -51,7 +51,7 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
    */
   public static function postRenderCollect($markup_object, $element) {
     if (\Drupal::currentUser()->isAuthenticated()) {
-      return;
+      return $markup_object;
     }
     self::$output .= $markup_object->__toString();
     return $markup_object;
@@ -62,7 +62,7 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
    */
   public static function postRenderHtmlTag($markup_object, $element) {
     if (\Drupal::currentUser()->isAuthenticated()) {
-      return;
+      return $markup_object;
     }
     if (
       $element['#tag'] == 'script' &&
