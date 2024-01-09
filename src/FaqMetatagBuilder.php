@@ -53,7 +53,10 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
     if (\Drupal::currentUser()->isAuthenticated()) {
       return $markup_object;
     }
-    self::$output .= $markup_object->__toString();
+    $output = $markup_object->__toString();
+    if (str_contains($output, 'iq-faq-item-question')) {
+      self::$output .= $output;
+    }
     return $markup_object;
   }
 
