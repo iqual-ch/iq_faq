@@ -51,11 +51,7 @@ function iq_faq_metatags_alter(array &$metatags) {
  * Implements hook_element_info_alter().
  */
 function iq_faq_element_info_alter(array &$types) {
-  // $types['pattern']['#post_render'][] = [
-  //   FaqMetatagBuilder::class,
-  //   'postRenderCollect',
-  // ];
-  $types['view']['#post_render'][] = [
+  $types['pattern']['#post_render'][] = [
     FaqMetatagBuilder::class,
     'postRenderCollect',
   ];
