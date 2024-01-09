@@ -119,8 +119,8 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
         $schema['@graph'][] = &$faqs;
       }
       if (count($questions)) {
-        $questions = array_map(fn($question) => trim(strip_tags((string) $question->ownerDocument->saveXML($question))), $questions);
-        $answers = array_map(fn($answer) => trim(strip_tags((string) $answer->ownerDocument->saveXML($answer))), $answers);
+        $questions = array_map(fn($question) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $question->ownerDocument->saveXML($question)))), $questions);
+        $answers = array_map(fn($answer) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $answer->ownerDocument->saveXML($answer)))), $answers);
         $url = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
         for ($i = 0; $i < count($questions); $i++) {
           $faqs[] = [
