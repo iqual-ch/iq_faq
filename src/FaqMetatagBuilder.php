@@ -70,13 +70,11 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
       !empty($element['#attributes']['type']) &&
       $element['#attributes']['type'] == 'application/ld+json'
       ) {
-      if ($element['#value'] !== '<--FAQ_PLACEHOLDER-->') {
-        $schema = Json::decode($element['#value']);
-        if (empty($schema['@context']) && $schema['@context'] != 'https://schema.org') {
-          return $markup_object;
-        }
-      }
       if (empty(self::$output)) {
+        return $markup_object;
+      }
+      $schema = Json::decode($element['#value']);
+      if (empty($schema['@context']) && $schema['@context'] != 'https://schema.org') {
         return $markup_object;
       }
       if (empty($schema)) {
