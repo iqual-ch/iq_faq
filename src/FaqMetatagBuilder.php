@@ -141,6 +141,9 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
           }
         )
         );
+        if (count($faqs) === 1) {
+          $faqs = $faqs[0];
+        }
         $result = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
         $markup_object = Markup::create($result);
       }
