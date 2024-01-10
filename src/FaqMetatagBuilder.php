@@ -111,8 +111,12 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
       }
 
       // Return cached result.
-      $cache_bin = \Drupal::cache('render');
       $cid = self::getCid();
+      if (empty($cid)) {
+        // Missing cid, return an empty result.
+        return Markup::create('');
+      }
+      $cache_bin = \Drupal::cache('render');
       $cache = $cache_bin->get($cid);
       if ($cache) {
         return Markup::create($cache->data);
