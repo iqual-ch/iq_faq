@@ -4,7 +4,9 @@ namespace Drupal\iq_faq;
 
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Url;
@@ -80,52 +82,43 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
   }
 
   /**
-   * Add the faqs to the markup.
+   * Add found faq questions to html output for anonymous users.
+   *
+   * @param \Drupal\Component\Render\MarkupInterface|string $markup_object
+   *   The markup object.
+   * @param array $element
+   *   The render element.
+   *
+   * @return \Drupal\Component\Render\MarkupInterface|string
+   *   The markup object.
    */
-  public static function postRenderHtmlTag($markup_object, $element) {
+  public static function postRenderHtmlTag(MarkupInterface|string $markup_object, array $element) {
     if (\Drupal::currentUser()->isAuthenticated()) {
       return $markup_object;
     }
+    // Output is in a script tag with type application/ld+json.
     if (
       $element['#tag'] == 'script' &&
       !empty($element['#attributes']) &&
       !empty($element['#attributes']['type']) &&
       $element['#attributes']['type'] == 'application/ld+json'
       ) {
-      if (empty(self::$output)) {
-        return $markup_object;
-      }
-      $schema = Json::decode($element['#value']);
-      if (empty($schema['@context']) && $schema['@context'] != 'https://schema.org') {
-        return $markup_object;
-      }
-      if (empty($schema)) {
-        $schema = [
-          '@context' => 'https://schema.org',
-          '@graph' => [
-            0 => [
-              '@type' => 'FAQPage',
-              'mainEntity' => [
-                0 => [
-                  '@type' => 'Question',
-                  'name'  => '',
-                  'acceptedAnswer' => [
-                    '@type' => 'Answer',
-                    'text'  => '',
-                  ],
-                ],
-              ],
-            ],
-          ],
-        ];
-      }
-      $dom = new \DOMDocument();
-      $dom->loadHTML(self::$output, LIBXML_NOERROR);
-      $finder = new \DomXPath($dom);
 
-      // Search content for iq-faq-item elements.
-      $questions = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-question ')]"));
-      $answers = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-answer ')]"));
+      // Decode existing schema info, abort if not schema.org.
+      $schema = Json::decode($element['#value']);
+      if (empty($schema['@context']) || $schema['@context'] != 'https://schema.org') {
+        return $markup_object;
+      }
+
+      // Return cached result.
+      $cache_bin = \Drupal::cache('render');
+      $cid = self::getCid();
+      $cache = $cache_bin->get($cid);
+      if ($cache) {
+        return Markup::create($cache->data);
+      }
+
+      // Load existing faq questions in output.
       $faqs = NULL;
       foreach ($schema['@graph'] as $delta => $entry) {
         if ($entry['@type'] == 'FAQPage') {
@@ -133,15 +126,51 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
           break;
         }
       }
-      if ($faqs == NULL) {
-        $faqs = ['@type' => 'FAQPage', 'mainEntity' => []];
-        $schema['@graph'][] = &$faqs;
+      // If output is not empty, add the questions.
+      if (!empty(self::$output)) {
+        self::addQuestions($faqs);
+        $result = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
       }
-      if (count($questions)) {
-        $questions = array_map(fn($question) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $question->ownerDocument->saveXML($question)))), $questions);
-        $answers = array_map(fn($answer) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $answer->ownerDocument->saveXML($answer)))), $answers);
-        $url = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
-        for ($i = 0; $i < count($questions); $i++) {
+
+      // No questions in output and no other schemas, set result to empty.
+      if ((empty($faqs[0]['name']) || $faqs = NULL) && count($schema['@graph']) <= 1) {
+        $result = '';
+      }
+      $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
+      return Markup::create($result);
+    }
+    return $markup_object;
+  }
+
+  /**
+   * Add questions from collected output.
+   *
+   * @param array $faqs
+   *   The faq array.
+   */
+  protected static function addQuestions(array &$faqs = NULL) {
+    $dom = new \DOMDocument();
+    $dom->loadHTML(self::$output, LIBXML_NOERROR);
+    $finder = new \DomXPath($dom);
+
+    // Search content for iq-faq-item elements.
+    $questions = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-question ')]"));
+    $answers = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-answer ')]"));
+    if ($faqs == NULL) {
+      $faqs = ['@type' => 'FAQPage', 'mainEntity' => []];
+      $schema['@graph'][] = &$faqs;
+    }
+    if (count($questions)) {
+      $questions = array_map(fn($question) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $question->ownerDocument->saveXML($question)))), $questions);
+      $answers = array_map(fn($answer) => trim(preg_replace('/\s\s+/', ' ', strip_tags((string) $answer->ownerDocument->saveXML($answer)))), $answers);
+      $url = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
+      for ($i = 0; $i < count($questions); $i++) {
+        $question = $questions[$i];
+        $hasQuestion = array_filter($faqs,
+        function ($v) use ($question) {
+          return !empty($v['name']) && $v['name'] == $question;
+        });
+        if (count($hasQuestion) == 0) {
           $faqs[] = [
             '@type' => 'Question',
             'name' => $questions[$i],
@@ -152,25 +181,33 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
             ],
           ];
         }
-        $faqs = array_values(
-          array_filter(
-          $faqs,
-          function ($v) {
-            return !empty($v['name']);
-          }
-        )
-        );
-        if (count($faqs) === 1) {
-          $faqs = $faqs[0];
-        }
-        $result = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
-        $markup_object = Markup::create($result);
       }
-      else {
-        $markup_object = Markup::create('');
+      $faqs = array_values(
+      array_filter(
+        $faqs,
+        function ($v) {
+          return !empty($v['name']);
+        }
+      )
+      );
+      if (count($faqs) === 1) {
+        $faqs = $faqs[0];
       }
     }
-    return $markup_object;
+  }
+
+  /**
+   * Generate cache id.
+   *
+   * @return string
+   *   The cache id.
+   */
+  protected static function getCid() {
+    if (empty(self::$entity)) {
+      return '';
+    }
+    $language = \Drupal::languageManager()->getCurrentLanguage(LanguageInterface::TYPE_CONTENT);
+    return 'iq_faq:' . self::$entity->getEntityTypeId() . ':' . self::$entity->id() . ':' . $language->getId();
   }
 
 }
