@@ -2,6 +2,7 @@
 
 namespace Drupal\iq_faq;
 
+use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Render\Markup;
@@ -30,6 +31,13 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
   protected static $entity = NULL;
 
   /**
+   * The collected cache tags.
+   *
+   * @var string[]
+   */
+  protected static $tags = [];
+
+  /**
    * {@inheritdoc}
    */
   public static function trustedCallbacks() {
@@ -37,25 +45,36 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
   }
 
   /**
-   * Set the main entity.
+   * Set the main entity and add cache tags.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The main entity.
    */
   public static function setEntity(ContentEntityInterface $entity) {
     self::$entity = $entity;
+    self::$tags = Cache::mergeTags($entity->getCacheTags(), self::$tags);
   }
 
   /**
-   * Add the output to be processed.
+   * Add output to process.
+   *
+   * @param \Drupal\Component\Render\MarkupInterface|string $markup_object
+   *   The markup object.
+   * @param array $element
+   *   The render element.
+   *
+   * @return \Drupal\Component\Render\MarkupInterface|string
+   *   The markup object.
    */
-  public static function postRenderCollect($markup_object, $element) {
+  public static function postRenderCollect(MarkupInterface|string $markup_object, array $element) {
     if (\Drupal::currentUser()->isAuthenticated()) {
       return $markup_object;
     }
     $output = $markup_object->__toString();
     if (str_contains($output, 'iq-faq-item-question')) {
       self::$output .= $output;
+      // Add any cache tags to invalidate output cache.
+      self::$tags = Cache::mergeTags($element['#cache']['tags'], self::$tags);
     }
     return $markup_object;
   }
