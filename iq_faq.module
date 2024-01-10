@@ -55,6 +55,10 @@ function iq_faq_element_info_alter(array &$types) {
     FaqMetatagBuilder::class,
     'postRenderCollect',
   ];
+  $types['view']['#post_render'][] = [
+    FaqMetatagBuilder::class,
+    'postRenderCollect',
+  ];
   $types['html_tag']['#post_render'][] = [
     FaqMetatagBuilder::class,
     'postRenderHtmlTag',
