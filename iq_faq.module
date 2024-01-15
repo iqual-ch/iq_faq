@@ -5,7 +5,8 @@
  * Contains iq_faq.module.
  */
 
-use Drupal\Core\Url;
+use Drupal\iq_faq\FaqMetatagBuilder;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_metatags_alter().
@@ -13,70 +14,53 @@ use Drupal\Core\Url;
  * Read FAQ data from rendered node content and add it to metatags.
  */
 function iq_faq_metatags_alter(array &$metatags) {
-
+  if (\Drupal::currentUser()->isAuthenticated()) {
+    return;
+  }
   // Only process metatags on GET requests.
   if (\Drupal::request()->getMethod() !== 'GET') {
     return;
   }
 
-  foreach (\Drupal::routeMatch()->getParameters()->all() as $entityType => $entity) {
-    // Check if entity is object.
-    if (!is_object($entity)) {
-      continue;
-    }
-
-    // Check if view_builder exists for given entity.
-    if (!\Drupal::service('entity_type.manager')->hasHandler($entityType, 'view_builder')) {
-      continue;
-    }
-
-    // Render current page for metatag extraction.
-    $builder = \Drupal::service('entity_type.manager')->getViewBuilder($entityType);
-    $build = $builder->view($entity, 'full');
-    $output = \Drupal::service('renderer')->renderPlain($build);
-
-    $dom = new DOMDocument();
-    $dom->loadHTML($output, LIBXML_NOERROR);
-    $finder = new DomXPath($dom);
-
-    // Search content for iq-faq-item elements.
-    $questions = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-question ')]"));
-    $answers = iterator_to_array($finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' iq-faq-item-answer ')]"));
-
-    if (count($questions)) {
-
-      $schemaFAQ = [
-        'pivot' => 1,
-        '@type' => 'Question',
-        'name'  => '',
-        'acceptedAnswer' => [
-          'pivot' => 1,
-          '@type' => 'Answer',
-          'text'  => '',
-        ],
-      ];
-
-      if (array_key_exists('schema_qa_page_main_entity', $metatags)) {
-        $metatagsFaq = unserialize($metatags['schema_qa_page_main_entity'], [
-          'allowed_classes' => FALSE,
-        ]);
-        if (array_key_exists('name', $metatagsFaq)) {
-          if (array_key_exists('acceptedAnswer', $metatagsFaq) && array_key_exists('text', $metatagsFaq['acceptedAnswer'])) {
-            $schemaFAQ['name'] = $metatagsFaq['name'];
-            $schemaFAQ['acceptedAnswer']['text'] = $metatagsFaq['acceptedAnswer']['text'];
-          }
-        }
-      }
-
-      $questions = array_map(fn($question) => trim(strip_tags((string) $question->ownerDocument->saveXML($question))), $questions);
-
-      $answers = array_map(fn($answer) => trim(strip_tags((string) $answer->ownerDocument->saveXML($answer))), $answers);
-
-      $schemaFAQ['name'] = trim(implode('::', array_merge(explode('::', trim((string) $schemaFAQ['name'], '::')), $questions)), '::');
-      $schemaFAQ['acceptedAnswer']['text'] = trim(implode('::', array_merge(explode('::', trim((string) $schemaFAQ['acceptedAnswer']['text'], '::')), $answers)), '::');
-      $schemaFAQ['acceptedAnswer']['url'] = Url::fromRoute('<current>', [], ["absolute" => TRUE])->toString();
-      $metatags['schema_qa_page_type'] = 'FAQPage';
-      $metatags['schema_qa_page_main_entity'] = serialize($schemaFAQ);
-    }
+  $node = \Drupal::request()->get('node');
+  if (!($node instanceof NodeInterface)) {
+    return;
   }
+
+  // Set the entity for the faq builder.
+  FaqMetatagBuilder::setEntity($node);
+
+  // Prepare default value for qa page if not yet set.
+  if (empty($metatags['schema_qa_page_main_entity'])) {
+    $metatags['schema_qa_page_main_entity'] = [[
+      'pivot' => 1,
+      '@type' => 'Question',
+      'name'  => '',
+      'acceptedAnswer' => [
+        'pivot' => 1,
+        '@type' => 'Answer',
+        'text'  => '',
+      ],
+    ],
+    ];
+    $metatags['schema_qa_page_type'] = 'FAQPage';
+  }
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function iq_faq_element_info_alter(array &$types) {
+  $types['pattern']['#post_render'][] = [
+    FaqMetatagBuilder::class,
+    'postRenderCollect',
+  ];
+  $types['view']['#post_render'][] = [
+    FaqMetatagBuilder::class,
+    'postRenderCollect',
+  ];
+  $types['html_tag']['#post_render'][] = [
+    FaqMetatagBuilder::class,
+    'postRenderHtmlTag',
+  ];
 }
