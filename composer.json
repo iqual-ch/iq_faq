@@ -12,6 +12,6 @@
     "php": "^8.1",
     "drupal/core": "^10 || ^11",
     "drupal/pagedesigner_block_adaptable": "^4.1",
-    "iqual/iq_metatag_extension": "dev-3.x as 3.1.0"
+    "iqual/iq_metatag_extension": "dev-3.x"
   }
 }
