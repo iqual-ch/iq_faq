@@ -152,7 +152,7 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
    * @param array $faqs
    *   The faq array.
    */
-  protected static function addQuestions(array &$faqs = NULL) {
+  protected static function addQuestions(?array &$faqs = NULL) {
     $dom = new \DOMDocument();
     $dom->loadHTML(self::$output, LIBXML_NOERROR);
     $finder = new \DomXPath($dom);
