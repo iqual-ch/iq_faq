@@ -130,6 +130,10 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
           break;
         }
       }
+
+      // Initialize result with existing schema.
+      $result = json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+
       // If output is not empty, add the questions.
       if (!empty(self::$output)) {
         self::addQuestions($faqs);
@@ -137,9 +141,10 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
       }
 
       // No questions in output and no other schemas, set result to empty.
-      if ((empty($faqs[0]['name']) || $faqs = NULL) && count($schema['@graph']) <= 1) {
+      if ((empty($faqs[0]['name']) || $faqs === NULL) && count($schema['@graph']) <= 1) {
         $result = '';
       }
+
       $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
       return Markup::create($result);
     }
