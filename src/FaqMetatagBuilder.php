@@ -140,8 +140,10 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
       if ((empty($faqs[0]['name']) || $faqs = NULL) && count($schema['@graph']) <= 1) {
         $result = '';
       }
-      $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
-      return Markup::create($result);
+      if ($result) {
+        $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
+        return Markup::create($result);
+      }
     }
     return $markup_object;
   }
