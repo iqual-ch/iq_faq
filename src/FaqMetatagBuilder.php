@@ -110,19 +110,21 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
         return $markup_object;
       }
 
-      // Return cached result.
+      // Return cached result. Without a main entity there is no cache id, in
+      // which case the result is still built, only not cached. Returning an
+      // empty result here discarded the whole graph, including the schema data
+      // of other modules that this module never contributed to.
       $cid = self::getCid();
-      if (empty($cid)) {
-        // Missing cid, return an empty result.
-        return Markup::create('');
-      }
       $cache_bin = \Drupal::cache('render');
-      $cache = $cache_bin->get($cid);
-      if ($cache) {
-        return Markup::create($cache->data);
+      if (!empty($cid)) {
+        $cache = $cache_bin->get($cid);
+        if ($cache) {
+          return Markup::create($cache->data);
+        }
       }
 
       // Load existing faq questions in output.
+      $result = '';
       $faqs = NULL;
       foreach ($schema['@graph'] as $delta => $entry) {
         if ($entry['@type'] == 'FAQPage') {
@@ -141,7 +143,9 @@ class FaqMetatagBuilder implements TrustedCallbackInterface {
         $result = '';
       }
       if ($result) {
-        $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
+        if (!empty($cid)) {
+          $cache_bin->set($cid, $result, Cache::PERMANENT, self::$tags);
+        }
         return Markup::create($result);
       }
     }
